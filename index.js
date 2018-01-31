@@ -1,141 +1,77 @@
 const express = require('express');
-
 const app = express();
 
-const bookRouter = require("./routes/book");
-const userInfoHandler = require("./middlewares/userInfoHandler");
-
-app.use("/book", bookRouter);
-app.use(userInfoHandler);
-
-let myLogger = (req, res, next) =>{
-    console.log("Inside logger")
-    next();
-}
-
-let requestTimer = (req, res, next) =>{
-    console.log("Inside requestTimer")
-    req.requestTime = new Date();
-    // setTimeout( () =>{
-    //     next();
-    // }, 5000)
-    next();
-}
-
-console.log("Type of requestTimer "+typeof(requestTimer))
-
-app.use(requestTimer)
-
-app.all("/*", (req, res,next)=>{
-    console.log("All Method is called")
-    next();
-})
-
-let firstEmp = (req, res, next) => {
-    console.log("First employee request handler")
-    next();
-}
-let secEmp = (req, res, next) => {
-    console.log("Second employee request handler")
-    next();
-}
-let thirdEmp = (req, res, next) => {
-    console.log("Third employee request handler")
-    res.send("Exit Employee")
-}
-
-app.get("/employee", [firstEmp, secEmp, thirdEmp])
-
-app.get("/user/:id(\[a-z]+)", (req, res, next)=>{
-    console.log("user [a-z] is ", req.params)
-    res.send("user [a-z] method is called");
-})
-
-app.get("/user/:id(\[0-9]+)", (req, res, next)=>{
-    console.log("user [0-9] is ", req.params)
+app.use("/user/:id", (req, res, next) =>{
+    console.log("Inside User Id")
+    console.log("Request Method is ", req.method)
+    console.log("Request Params is ", req.params)
+    //res.send("User Method Executed")
+    next()
+}, (req, res, next) => {
+    console.log("Inside user/:id 2")
     //res.end()
-    res.send("user [0-9] method is called");
+    //res.send("Hello World")
+    next();
 })
 
-app.get("/user/:name/id/:id", (req, res, next)=>{
-    console.log("username is ", req.params)
-    res.send("user parameter method is called");
+app.get("/user/:id", (req, res, next) => {
+    console.log("/user/:id 3-1")
+    if(req.params.id == '0'){
+        next('route')
+    }else{
+        next()
+    }
+    //res.send("Hello World 1") 
+}, (req, res, next) => {
+    console.log("/user/:id 3-2")
+    next()    
+}, (req, res, next) => {
+    console.log("/user/:id 3-3")
+    next()    
+}, (req, res, next) => {
+    console.log("/user/:id 3-4")
+    next()    
 })
 
-app.get("/distance/between/:a-:b", (req, res, next)=>{
-    console.log("distance is ", req.params)
-    res.send("distance method is called");
+app.get("/user/:id", (req, res, next) => {
+    console.log("/user/:id 4")
+    //res.send("Hello World 1")
+    next()
+})
+app.get("/user/:id", (req, res, next) => {
+    console.log("/user/:id 5")
+    res.send("Hello World 2")
 })
 
-app.get("/distance/between/:a.:b", (req, res, next)=>{
-    console.log("distance a.:b is ", req.params)
-    res.send("distance a.:b method is called");
+// app.use("/*", (req, res, next) =>{
+//     console.log("Inside User Id")
+//     console.log("Request Method is ", req.method)
+//     console.log("Request Params is ", req.params)
+//     next()
+    
+//     //res.send("User Method Executed")
+// })
+
+
+app.use((req, res, next)=>{
+    console.log("First Middleware")
+    next()
 })
 
-app.get("/*fly$/", (req, res, next)=>{
-    console.log("Get /.*fly$/ method is called")
-    res.send("Get /.*fly$/ method is called");
+app.get("/*", (req,res,next) => {
+    console.log("Second Middleware")
+    next()
 })
 
-app.get("/api/", (req, res, next)=>{
-    console.log("Get /a/ method is called")
-    res.send("Get /a/ method is called");
-})
-
-app.get("/a(bcd)?efg", (req, res, next)=>{
-    console.log("Get a(bcd)?efg method is called")
-    res.send("Get a(bcd)?efg method is called");
-})
-
-app.get("/about-us", (req, res, next)=>{
-    console.log("Get about-us method is called")
-    res.send("Get about-us method is called");
-})
-
-app.get("/dashboard.user", (req, res, next)=>{
-    res.send("Get dashboard.user method is called");
-})
-
-app.get("/abcd/ab?cd/abc", (req, res, next)=>{
-    console.log("Get ab?cd method is called")
-    res.send("Get ab?cd method is called");
-})
-
-app.get("/ab+cd", (req, res, next)=>{
-    console.log("Get ab+cd method is called")
-    res.send("Get ab+cd method is called");
-})
-
-
-
-app.get('/ab*cd', function (req, res) {
-    console.log("Get ab*cd method is called")
-    res.send('Get ab*cd method is called')
-})
-
-app.use(myLogger);
-
-app.get("/service-worker.js", (req, res, next)=>{
-    console.log("Get service worker is called")
-    res.send("Get service worker is called");
-})
 
 app.route("/")
 .get((req, res, next)=>{
     console.log("Get method is called")
-
-    //let requestTime = req.requestTime;
-    let userId = req.userId;
-//  res.send("Get method is called and requestTime is "+requestTime);
-    res.send("Get method is called and userId is "+userId);
+    res.send("Get method is called");
 }).post((req, res, next)=>{
     console.log("Post method is called")
     res.send("Post method called");
 })
-
-
-
-
 
 
 

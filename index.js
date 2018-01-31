@@ -3,8 +3,28 @@ const express = require('express');
 const app = express();
 
 const bookRouter = require("./routes/book");
+const userInfoHandler = require("./middlewares/userInfoHandler");
 
 app.use("/book", bookRouter);
+app.use(userInfoHandler);
+
+let myLogger = (req, res, next) =>{
+    console.log("Inside logger")
+    next();
+}
+
+let requestTimer = (req, res, next) =>{
+    console.log("Inside requestTimer")
+    req.requestTime = new Date();
+    // setTimeout( () =>{
+    //     next();
+    // }, 5000)
+    next();
+}
+
+console.log("Type of requestTimer "+typeof(requestTimer))
+
+app.use(requestTimer)
 
 app.all("/*", (req, res,next)=>{
     console.log("All Method is called")
@@ -93,14 +113,21 @@ app.get('/ab*cd', function (req, res) {
     res.send('Get ab*cd method is called')
 })
 
+app.use(myLogger);
+
 app.get("/service-worker.js", (req, res, next)=>{
     console.log("Get service worker is called")
     res.send("Get service worker is called");
 })
+
 app.route("/")
 .get((req, res, next)=>{
     console.log("Get method is called")
-    res.send("Get method is called");
+
+    //let requestTime = req.requestTime;
+    let userId = req.userId;
+//  res.send("Get method is called and requestTime is "+requestTime);
+    res.send("Get method is called and userId is "+userId);
 }).post((req, res, next)=>{
     console.log("Post method is called")
     res.send("Post method called");

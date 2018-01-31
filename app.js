@@ -11,8 +11,6 @@ const app = express();
 
 app.use(bodyParser.json())
 
-
-
 let user = {
     firstName: "Gaurav",
     lastName: "Garg"

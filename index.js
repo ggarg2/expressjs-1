@@ -1,77 +1,86 @@
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser')
 
-app.use("/user/:id", (req, res, next) =>{
-    console.log("Inside User Id")
-    console.log("Request Method is ", req.method)
-    console.log("Request Params is ", req.params)
-    //res.send("User Method Executed")
-    next()
-}, (req, res, next) => {
-    console.log("Inside user/:id 2")
-    //res.end()
-    //res.send("Hello World")
-    next();
+
+
+
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/laradb1');
+
+
+app.use(bodyParser.json())
+
+const Cat = mongoose.model('Cat', { name: String }, 'Dogs');
+const Dog = mongoose.model('Dog', { name: String, breed: String }, 'Dogs');
+
+// const kitty = new Cat({ name: 'Zildjian' });
+// const spike = new Dog({ name: 'Spike', breed: 'Bull Dog'})
+
+// kitty.save().then(() => console.log('meow'));
+// spike.save().then((dog)=>{console.log("Bow Bow ", dog)})
+
+
+app.post('/dog', (req, res, next) => {
+    new Dog(req.body).save().then(
+       (newDog) => {
+           res.send({data : newDog})
+       } 
+    ).catch(
+        (error) => {
+            res.status(500).send("Some Error")
+        }
+    )
 })
 
-app.get("/user/:id", (req, res, next) => {
-    console.log("/user/:id 3-1")
-    if(req.params.id == '0'){
-        next('route')
-    }else{
-        next()
-    }
-    //res.send("Hello World 1") 
-}, (req, res, next) => {
-    console.log("/user/:id 3-2")
-    next()    
-}, (req, res, next) => {
-    console.log("/user/:id 3-3")
-    next()    
-}, (req, res, next) => {
-    console.log("/user/:id 3-4")
-    next()    
+app.get('/dog', (req, res, next) => {
+    Dog.find((error, response) => {
+        res.send(response)
+    })
 })
 
-app.get("/user/:id", (req, res, next) => {
-    console.log("/user/:id 4")
-    //res.send("Hello World 1")
-    next()
-})
-app.get("/user/:id", (req, res, next) => {
-    console.log("/user/:id 5")
-    res.send("Hello World 2")
-})
-
-// app.use("/*", (req, res, next) =>{
-//     console.log("Inside User Id")
-//     console.log("Request Method is ", req.method)
-//     console.log("Request Params is ", req.params)
-//     next()
-    
-//     //res.send("User Method Executed")
-// })
-
-
-app.use((req, res, next)=>{
-    console.log("First Middleware")
-    next()
+app.get('/dog/:id', (req, res, next) => {
+    Dog.findById(req.params.id, 
+        (error, data) => {
+            // data.name = "Test Case"
+            // Dog.update({_id: data._id}, data, (error, data1)=>{
+            //     res.send(data1)
+            // })
+            res.send(data);
+        }
+    )
 })
 
-app.get("/*", (req,res,next) => {
-    console.log("Second Middleware")
-    next()
+app.delete('/dog/:id', (req, res, next) => {
+    Dog.findByIdAndRemove(req.params.id, 
+        (error, data) => {
+            res.send(data);
+        }
+    )
+
 })
 
-
-app.route("/")
-.get((req, res, next)=>{
-    console.log("Get method is called")
-    res.send("Get method is called");
-}).post((req, res, next)=>{
-    console.log("Post method is called")
-    res.send("Post method called");
+app.put('/dog', (req, res, next) => {
+    console.log("Inside put methods ",  req.body)
+   Dog.findByIdAndUpdate(req.body._id, req.body, { upsert : true},
+    (error, data) => {
+            console.log(error)
+            res.send(data)
+        }
+    )
 })
+
+app.put('/dog1', (req, res, next) => {
+    console.log("Inside put methods ",  req.body)
+   Dog.updateOne({_id : req.body._id}, req.body, { upsert : true},
+    (error, data) => {
+            console.log(error)
+            res.send(data)
+        }
+    )
+})
+
 
 
 

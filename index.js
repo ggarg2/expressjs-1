@@ -81,6 +81,10 @@ app.put('/dog1', (req, res, next) => {
     )
 })
 
+app.get("/", function(){
+    console.log("Hello World")
+})
+
 
 
 

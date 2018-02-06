@@ -2,9 +2,9 @@
   "name": "express-1",
   "version": "0.0.1",
   "description": "4:30 batch expressjs training",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "nodemon index"
+    "start": "nodemon app"
   },
   "author": "Gaurav Garg",
   "license": "ISC",

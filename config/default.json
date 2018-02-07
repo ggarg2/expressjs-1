@@ -1,0 +1,9 @@
+{
+    "mongodb": {
+        "host": "mongodb://localhost/laradb1"
+    },
+    "serverConfig": {
+        "port": 4000,
+        "host": "localhost"
+    }
+}

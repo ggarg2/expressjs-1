@@ -1,6 +1,12 @@
+const config = require('config');
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/laradb1');
+//Get the host name from env config
+const mongodbHost = config.get('mongodb.host');
+
+console.log("mongodbHost ", mongodbHost)
+
+mongoose.connect(mongodbHost);
 
 let mongoDb = mongoose.connection
 

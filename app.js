@@ -7,11 +7,11 @@ const cors = require('cors')
 const GlobalError = require('./exception/global.error')
 const ErrorHandler = require('./exception/error.handler')
 const compression = require('compression')
+const firebaseAuth = require('./security/firebase.config')
 
 //https://www.npmjs.com/package/config
 //Environment specific configuration
 const config = require('config')
-
 
 const port = config.get("serverConfig.port") || 3000;
 
@@ -30,6 +30,10 @@ app.use(compression())
 
 //Cross origin request source
 app.use(cors())
+
+//add firebase at this line
+//app.use("/api/save/*", firebaseAuth)  
+app.use(firebaseAuth)
 
 //Application routes
 app.use(router);
